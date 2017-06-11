@@ -1,15 +1,17 @@
 package com.formulaone.model
 
+import static com.formulaone.model.SpeedUtils.*
+
 /**
  * Created by r0h1 on 03-Jun-17.
  */
 class Car {
     int index
-    int topSpeed
-    int acceleration
+    float topSpeed
+    float acceleration
     int handlingFactor
     boolean nitroAvailable
-    int speed
+    float speed
     int position = 0
 
 
@@ -31,5 +33,21 @@ class Car {
         return -startPosition
     }
 
+    void slowDown(int seconds) {
+        this.speed = handlingFactor * speed
+        updateToNextPosition(seconds)
+    }
 
+    void updateToNextPosition(int seconds) {
+        def speedmps = kphToMps(speed)
+        def newPosition = this.position + distanceAfterAcceleration(speedmps, acceleration, seconds)
+        this.position = newPosition
+    }
+
+    void accelerate(int seconds) {
+        def speedmps = kphToMps(speed)
+        def newSpeed = speedmps + acceleration*seconds
+        this.speed = newSpeed
+        updateToNextPosition(seconds)
+    }
 }
